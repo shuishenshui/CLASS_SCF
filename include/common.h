@@ -346,6 +346,10 @@ extern "C" {
 #define class_print_species(name,type) \
 printf("-> %-30s Omega = %-15g , omega = %-15g\n",name,pba->Omega0_##type,pba->Omega0_##type*pba->h*pba->h);
 
+//Printf
+#define class_print_values(msg,value) \
+printf(msg,value);
+
 //Generic evolver prototype
 #define EVOLVER_PROTOTYPE \
     int (*)(double, double *, double *, void *, ErrorMsg), \

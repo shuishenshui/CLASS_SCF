@@ -108,7 +108,7 @@ int halofit(
     Omega_v = 1.-pvecback[pba->index_bg_Omega_m]-pvecback[pba->index_bg_Omega_r];
     /* until v2.9.3 this function was called at a_0=1 instead of a=pvecback[pba->index_bg_a] */
     class_call(background_w_fld(pba,pvecback[pba->index_bg_a],&w,&dw_over_da_fld,&integral_fld), pba->error_message, pfo->error_message);
-    // class_print_values("w_fld in halofit: %e", w);
+    class_print_values("w_fld in halofit: %e", w);
   }
   else {
 
