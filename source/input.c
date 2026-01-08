@@ -3422,6 +3422,17 @@ int input_read_parameters_species(struct file_content * pfc,
     /* Complete set of parameters */
     //scf_m = pba->scf_parameters[0];
     //scf_f = pba->scf_parameters[1];
+
+    class_call(parser_read_string(pfc,"fluid_equation_of_state",&string1,&flag1,errmsg),
+               errmsg,
+               errmsg);
+    /* Complete set of parameters */
+    if (flag1 == _TRUE_) {
+
+        if ((strstr(string1,"SCF") != NULL) || (strstr(string1,"scf") != NULL)) {
+        pba->fluid_equation_of_state = SCF;
+      }
+    }
   }
 
   return _SUCCESS_;

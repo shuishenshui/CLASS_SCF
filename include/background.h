@@ -13,7 +13,7 @@
 
 /** list of possible parametrisations of the DE equation of state */
 
-enum equation_of_state {CLP,EDE};
+enum equation_of_state {CLP,EDE,SCF};
 
 
 /** list of possible parametrizations of the varying fundamental constants */

@@ -507,6 +507,8 @@ int background_functions(
     rho_r += 3.*pvecback[pba->index_bg_p_scf]; //field pressure contributes radiation
     rho_m += pvecback[pba->index_bg_rho_scf] - 3.* pvecback[pba->index_bg_p_scf]; //the rest contributes matter
     //printf(" a= %e, Omega_scf = %f, \n ",a, pvecback[pba->index_bg_rho_scf]/rho_tot );
+    // pba->w_scf = ((phi_prime*phi_prime/(2*a*a) - V_scf(pba,phi))/3.)/((phi_prime*phi_prime/(2*a*a) + V_scf(pba,phi))/3.); 
+
   }
 
   /* ncdm */
@@ -693,7 +695,10 @@ int background_w_fld(
   double dOmega_ede_over_da = 0.;
   double d2Omega_ede_over_da2 = 0.;
   double a_eq, Omega_r, Omega_m;
-
+  /** for scf */
+  double *pvecback_;
+  int last_index_back_;
+  last_index_back_ = 0;
   /** - first, define the function w(a) */
   switch (pba->fluid_equation_of_state) {
   case CLP:
@@ -722,6 +727,18 @@ int background_w_fld(
     // w_ede(a) taken from eq. (11) in 1706.00730
     *w_fld = - dOmega_ede_over_da*a/Omega_ede/3./(1.-Omega_ede)+a_eq/3./(a+a_eq);
     break;
+
+  case SCF:
+    class_alloc(pvecback_,
+              pba->bg_size*sizeof(double),
+              pba->error_message);
+
+    class_call(background_at_z(pba,1.0/a-1,long_info,inter_closeby,&last_index_back_,pvecback_),
+             pba->error_message,
+             pba->error_message);
+
+    *w_fld =  pvecback_[pba->index_bg_p_scf]/pvecback_[pba->index_bg_rho_scf];
+    break;
   }
 
 
@@ -741,6 +758,9 @@ int background_w_fld(
       + dOmega_ede_over_da*dOmega_ede_over_da*a/3./(1.-Omega_ede)/(1.-Omega_ede)/Omega_ede
       + a_eq/3./(a+a_eq)/(a+a_eq);
     break;
+  case SCF:
+  //halofit用不上
+    break;
   }
 
   /** - finally, give the analytic solution of the following integral:
@@ -759,6 +779,9 @@ int background_w_fld(
     break;
   case EDE:
     class_stop(pba->error_message,"EDE implementation not finished: to finish it, read the comments in background.c just before this line\n");
+    break;
+  case SCF:
+  //halofit用不上
     break;
   }
 
